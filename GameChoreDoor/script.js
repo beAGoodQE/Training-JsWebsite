@@ -1,4 +1,8 @@
 // Access HTML elements
+const doorImage1 = document.getElementById('door1');
+const doorImage2 = document.getElementById('door2');
+const doorImage3 = document.getElementById('door3');
+const startButton = document.getElementById('start');
 
 let botDoorPath = 'https://content.codecademy.com/projects/chore-door/images/robot.svg';
 let beachDoorPath = 'https://content.codecademy.com/projects/chore-door/images/beach.svg';
@@ -12,7 +16,56 @@ let openDoor3;
 let currentlyPlaying = true;
 
 // Define game logic to check doors, progress game, end game, and choose a random chore door
+const isClicked = door => {
+  if (closedDoorPath === door.src) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
+const isBot = door => {
+  if (botDoorPath === door.src) {
+    return true;
+  }
+}
+
+const gameOver = status => {
+  'win' === status ? startButton.innerHTML = 'You win! Play again?' : startButton.innerHTML = 'Game over! Play again?';
+
+  currentlyPlaying = false;
+}
+
+const playDoor = door => {
+  numClosedDoors --;
+
+  if (0 === numClosedDoors) {
+    gameOver('win');
+  }
+  else if (isBot(door)) {
+    gameOver('');
+  }
+}
+
+const randomChoreDoorGenerator = () => {
+  let choreDoor = Math.floor(Math.random() * numClosedDoors);
+
+  if (0 === choreDoor) {
+    openDoor1 = botDoorPath;
+    openDoor2 = beachDoorPath;
+    openDoor3 = spaceDoorPath;
+  }
+  else if (1 === choreDoor) {
+    openDoor1 = beachDoorPath;
+    openDoor2 = botDoorPath;
+    openDoor3 = spaceDoorPath;
+  }
+  else {
+    openDoor1 = beachDoorPath;
+    openDoor2 = spaceDoorPath;
+    openDoor3 = botDoorPath;
+  }
+}
 
 doorImage1.onclick = () => {
   if (currentlyPlaying && isClicked(doorImage1)) {
@@ -42,3 +95,15 @@ startButton.onclick = () => {
 }
 
 // Start a game round
+const startRound = () => {
+  doorImage1.src = closedDoorPath;
+  doorImage2.src = closedDoorPath;
+  doorImage3.src = closedDoorPath;
+  numClosedDoors = 3;
+  currentlyPlaying = true;
+  startButton.innerHTML = 'Good Luck!';
+
+  randomChoreDoorGenerator();
+}
+
+startRound();
